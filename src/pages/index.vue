@@ -1,5 +1,9 @@
 <!-- eslint-disable vue/multi-word-component-names -->
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { usePageStore } from '@/stores/page'
+
+usePageStore().pageData.title = 'Homepage'
+</script>
 
 <template>
   <div>
