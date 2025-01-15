@@ -11,13 +11,18 @@ const links = [
     icon: 'lucide:house',
   },
   {
-    title: 'Projects',
-    to: '/projects',
+    title: 'Reports',
+    to: '/reports',
     icon: 'lucide:building',
   },
   {
-    title: 'My Tasks',
-    to: '/tasks',
+    title: 'Emails',
+    to: '/emails',
+    icon: 'lucide:badge-check',
+  },
+  {
+    title: 'Departments',
+    to: '/departments',
     icon: 'lucide:badge-check',
   },
 ]
@@ -43,7 +48,7 @@ const executeAction = async (linkTitle: string) => {
     if (isLoggedOut) router.push('/login')
   }
 }
-defineEmits(['taskClicked'])
+defineEmits(['taskClicked', 'projectClicked', 'reportClicked', 'departmentClicked', 'emailClicked'])
 
 const { menuOpen, toggleMenu } = inject(menuKey) as MenuInjectionOptions
 const windowWidth = useWindowSize().width
@@ -74,7 +79,10 @@ watchEffect(() => {
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuItem @click="$emit('taskClicked')"> Task </DropdownMenuItem>
-          <DropdownMenuItem> Project </DropdownMenuItem>
+          <DropdownMenuItem @click="$emit('projectClicked')"> Project </DropdownMenuItem>
+          <DropdownMenuItem @click="$emit('reportClicked')"> Report </DropdownMenuItem>
+          <DropdownMenuItem @click="$emit('departmentClicked')"> Department </DropdownMenuItem>
+          <DropdownMenuItem @click="$emit('emailClicked')"> Email </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

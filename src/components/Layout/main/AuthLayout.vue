@@ -16,8 +16,18 @@ provide(menuKey, {
 
 <template>
   <div>
-    <Sidebar @taskClicked="taskSheetOpen = true" />
+    <Sidebar
+      @taskClicked="taskSheetOpen = true"
+      @reportClicked="taskSheetOpen = true"
+      @projectClicked="taskSheetOpen = true"
+      @departmentClicked="taskSheetOpen = true"
+      @emailClicked="taskSheetOpen = true"
+    />
     <AppNewTask v-model="taskSheetOpen" />
+    <AppNewProject v-model="taskSheetOpen" />
+    <AppNewReport v-model="taskSheetOpen" />
+    <AppNewDepartment v-model="taskSheetOpen" />
+    <AppNewEmail v-model="taskSheetOpen" />
     <div
       class="flex flex-col transition-[margin]"
       :class="{ 'ml-52': menuOpen, 'ml-24': !menuOpen }"

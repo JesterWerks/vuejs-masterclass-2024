@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import AppErrorPage from '@/components/AppError/AppErrorPage.vue'
-import { supabase } from './lib/supabaseClient'
-import { Component } from 'lucide-vue-next'
 
 const errorStore = useErrorStore()
 
