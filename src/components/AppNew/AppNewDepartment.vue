@@ -78,12 +78,13 @@ const selectOptions = ref({
           type="text"
           name="name"
           id="name"
-          label="Name"
+          label="Department Name"
           placeholder="My new department"
-          validation="required|length:1,255"
+          validation="required|length:3,120"
         />
         <FormKit
           type="select"
+          multiple="true"
           name="profile_id"
           id="profile_id"
           label="User"
@@ -93,21 +94,22 @@ const selectOptions = ref({
         />
         <FormKit
           type="select"
-          name="project_id"
-          id="project_id"
-          label="Department"
-          placeholder="Select a project"
+          multiple="true"
+          name="report_id"
+          id="report_id"
+          label="Report(s)"
+          placeholder="Select report(s)"
           :options="selectOptions.reports"
           validation="required"
         />
-        <FormKit
+        <!-- <FormKit
           type="textarea"
           name="description"
           id="description"
           label="Description"
           placeholder="Department description"
           validation="length:0,500"
-        />
+        /> -->
       </FormKit>
     </SheetContent>
   </Sheet>
