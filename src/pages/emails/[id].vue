@@ -10,9 +10,9 @@ const { id } = useRoute('/emails/[id]').params;
 const email = ref<Email | null>(null)
 
 watch(
-  () => email.value?.email,
+  () => email_address.value?.email_address,
   () => {
-    usePageStore().pageData.title = `Email: ${email.value?.email || ''}`
+    usePageStore().pageData.title = `Email: ${email_address.value?.email_address || ''}`
   }
 )
 
@@ -20,8 +20,8 @@ const getEmail = async () => {
   const { data, error } = await emailQuery(parseInt(id))
   if (error) console.log('error', error)
 
-  console.log('email data', data)
-  email.value = data
+  console.log('email_address data', data)
+  email_address.value = data
 }
 
 await getEmail()
@@ -29,19 +29,19 @@ await getEmail()
 </script>
 
 <template>
-  <Table v-if="email">
+  <Table v-if="email_address">
     <TableRow>
       <TableHead> Id </TableHead>
-      <TableCell>{{ email.id }}</TableCell>
+      <TableCell>{{ email_address.id }}</TableCell>
     </TableRow>
     <TableRow>
       <TableHead> Email </TableHead>
-      <TableCell> {{ email.email }} </TableCell>
+      <TableCell> {{ email_address.email_address }} </TableCell>
     </TableRow>
     <TableRow>
       <TableHead> Reports </TableHead>
-      <TableCell v-if="email.reports">
-        <RouterLink v-for="emailReport in email.reports" :key="emailReport!" :to="`/reports/${emailReport}`">{{
+      <TableCell v-if="email_address.reports">
+        <RouterLink v-for="(emailReport, index) in email_address.reports" :key="index" :to="`/reports/${emailReport}`">{{
           `${emailReport}`
         }}
         </RouterLink>
@@ -49,19 +49,19 @@ await getEmail()
     </TableRow>
     <TableRow>
       <TableHead> Date Added </TableHead>
-      <TableCell>{{ email.date_added }}</TableCell>
+      <TableCell>{{ email_address.date_added }}</TableCell>
     </TableRow>
     <TableRow>
       <TableHead> Date Edited </TableHead>
-      <TableCell>{{ email.date_edited }}</TableCell>
+      <TableCell>{{ email_address.date_edited }}</TableCell>
     </TableRow>
     <TableRow>
       <TableHead> User Profile </TableHead>
       <TableCell>
         <div class="flex">
           <Avatar class="-mr-4 border border-primary hover:scale-110 transition-transform"
-            :class="email.profile_id ? 'cursor-pointer' : 'cursor-not-allowed'">
-            <RouterLink class="w-full h-full flex items-center justify-center" :to="`/users/${email.profile_id}`">
+            :class="email_address.id ? 'cursor-pointer' : 'cursor-not-allowed'">
+            <RouterLink class="w-full h-full flex items-center justify-center" :to="`/users/${email_address.id}`">
               <AvatarImage src="" alt="" />
               <AvatarFallback> </AvatarFallback>
             </RouterLink>

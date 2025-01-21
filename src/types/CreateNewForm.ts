@@ -32,7 +32,7 @@ export interface CreateNewDepartment {
 }
 
 export interface CreateNewEmail {
-  email: string
+  email_address: string
   reports_id: number[]
   profile_id: string
 }

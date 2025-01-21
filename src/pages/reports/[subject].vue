@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang='ts'>
-import { reportQuery } from '@/utils/supaQueries';
-import type { Report } from '@/utils/supaQueries'
+import { reportWithDetailsQuery } from '@/utils/supaQueries';
+import type { ReportWithDetails } from '@/utils/supaQueries'
 import { ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { usePageStore } from '@/stores/page';
@@ -22,7 +22,7 @@ const fields: string[] = [
 
 const { subject } = useRoute('/reports/[subject]').params;
 
-const report = ref<Report | null>(null)
+const report = ref<ReportWithDetails | null>(null)
 
 watch(
   () => report.value?.subject,
@@ -32,15 +32,21 @@ watch(
 )
 
 const getReport = async () => {
-  const { data, error } = await reportQuery(subject)
+  const { data, error } = await reportWithDetailsQuery(subject)
   if (error) console.log('error', error)
 
   report.value = data
 }
 
 await getReport()
-const departments: (string[] | null) = report.value?.departments_display ? report.value.departments_display.split('%') : null
-const emails: (string[] | null) = report.value?.emails_display ? report.value.emails_display.split(';') : null
+// const departments: (string[] | null) = report.value?.departments ? report.value.departments : null
+// const emails: (string[] | null) = report.value?.emails_display ? report.value.emails_display.split(';') : null
+
+const departments: (ReportWithDetails['departments'] | null) = report.value?.departments ? report.value.departments : null
+console.log(`departments: ${departments}`)
+const emails: (ReportWithDetails['emails'] | null) = report.value?.emails ? report.value.emails : null
+console.log(`emails: ${emails}`)
+
 
 const newDateEdited = report.value?.date_edited ? new Date(report.value.date_edited).toLocaleString() : null
 </script>
@@ -54,13 +60,13 @@ const newDateEdited = report.value?.date_edited ? new Date(report.value.date_edi
     <TableRow>
       <TableHead> Departments </TableHead>
       <TableCell v-if="departments">
-        <RouterLink v-for="dept in departments" :key="dept" :to="`/departments/${dept}`">{{ `${dept}, ` }}</RouterLink>
+        <RouterLink v-for="(dept, index) in report.departments" :key="index" :to="`/departments/${dept}`">{{ `${dept}, ` }}</RouterLink>
       </TableCell>
     </TableRow>
     <TableRow>
       <TableHead> Recipients </TableHead>
       <TableCell v-if="emails">
-        <RouterLink v-for="email in emails" :key="email" :to="`/departments/${email}`">{{ `${email}, ` }}</RouterLink>
+        <RouterLink v-for="(email, index) in report.emails" :key="index" :to="`/departments/${email}`">{{ `${email}, ` }}</RouterLink>
       </TableCell>
     </TableRow>
     <TableRow>
@@ -112,20 +118,6 @@ const newDateEdited = report.value?.date_edited ? new Date(report.value.date_edi
         <p class="text-muted-foreground text-sm font-semibold px-4 py-3">
           This project doesn't have documents yet...
         </p>
-        <!-- <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead> Name </TableHead>
-              <TableHead> Visibility </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            <TableRow>
-              <TableCell> Lorem ipsum dolor sit amet. </TableCell>
-              <TableCell> Private </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table> -->
       </div>
     </div>
   </section>

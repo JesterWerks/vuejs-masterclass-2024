@@ -1,18 +1,18 @@
 <script setup lang="ts">
 import type { CreateNewReport } from '@/types/CreateNewForm'
-import { createNewReportQuery, profilesQuery, reportsQuery } from '@/utils/supaQueries'
+import { createNewReportQuery, profilesQuery, reportsWithDetailsQuery } from '@/utils/supaQueries'
 
 const sheetOpen = defineModel<boolean>()
 
 const getReportsOptions = async () => {
-  const { data: allReports } = await reportsQuery
+  const { data: allReports } = await reportsWithDetailsQuery
 
   if (!allReports) return
 
   allReports.forEach((report) => {
     selectOptions.value.reports.push({
       label: report.subject ?? '',
-      value: report.id,
+      value: report.id ?? '',
     })
   })
 }

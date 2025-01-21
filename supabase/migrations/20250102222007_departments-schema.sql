@@ -2,13 +2,29 @@ drop table if exists "departments";
 
 create table
   public.departments (
-    id bigint generated always as identity not null,
-    "name" text not null,
-    report_id bigint null,
-    profile_id uuid references profiles (id) on delete cascade not null,
+    id uuid not null default gen_random_uuid (),
+    name text not null,
     date_added timestamp with time zone not null default now(),
     date_edited timestamp with time zone not null default now(),
-    collaborators text array default array[]::varchar[] not null,
-    constraint departments_pkey primary key (id),
-    constraint departments_report_id_fkey foreign key (report_id) references reports (id) on delete cascade
+    constraint departments_pkey primary key (id)
   ) tablespace pg_default;
+
+DROP TRIGGER IF EXISTS after_departments_insert ON public.departments;
+DROP Function IF EXISTS add_report_department_on_department_insert;
+
+CREATE OR REPLACE FUNCTION add_report_department_on_department_insert()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.id IS NOT NULL THEN
+        INSERT INTO public.report_department (report_id, department_id, date_added)
+        SELECT r.id, NEW.id, now()
+        FROM public.reports r
+        WHERE NEW.id IS NOT NULL;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+create trigger after_department_insert
+after insert on departments for each row
+execute function add_report_department_on_department_insert ();

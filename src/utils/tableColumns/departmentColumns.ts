@@ -39,12 +39,5 @@ export const columns: ColumnDef<DepartmentsWithReportsProfiles[0]>[] = [
       return h('div', { class: 'text-left font-small' }, formatDate(departmentDateEdited))
     }
   },
-  {
-    accessorKey: 'profile_id',
-    header: () => h('div', { class: 'text-left' }, 'Set Up By'),
-    cell: ({ row }) => {
-      const profileId: string = row.getValue('profile_id')
-      return h('div', { class: 'text-left font-small' }, profileId)
-    }
-  },
+
 ]

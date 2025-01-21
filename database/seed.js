@@ -1,10 +1,17 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-env node */
 import { fakerEN_US as faker } from '@faker-js/faker'
 import { createClient } from '@supabase/supabase-js'
 
 const supabase = createClient(process.env.VITE_SUPABASE_URL, process.env.SERVICE_ROLE_KEY)
 
-const numEntriesPerTable = 10
+const numEntriesPerTable = 4
+
+const departmentNames = faker.helpers.uniqueArray(faker.commerce.department, 30)
+const emailAddresses = faker.helpers.uniqueArray(faker.internet.email, 30)
+
+// console.log('departments', departments)
+// console.log('emailAddresses', emailAddresses)
 
 const testingUserEmail = process.env.TESTING_USER_EMAIL
 if (!testingUserEmail) {
@@ -23,8 +30,6 @@ const logStep = (stepMessage) => {
   console.log(stepMessage)
 }
 
-let emailsRecords = []
-let departmentsRecords = []
 let profileId = ''
 
 const PrimaryTestUserExists = async () => {
@@ -40,8 +45,11 @@ const PrimaryTestUserExists = async () => {
     return false
   }
 
-  logStep('Primary test user is found.')
-  return data?.id
+  logStep(`Primary test user is found. data.id = ${data.id}`)
+  profileId = data.id
+  console.log(`profileId: ${profileId}`)
+
+  return data.id
 }
 
 const createPrimaryTestUser = async () => {
@@ -49,9 +57,9 @@ const createPrimaryTestUser = async () => {
   const firstName = 'Test'
   const lastName = 'Account'
   const userName = 'testaccount1'
-  const email = testingUserEmail
+  const email_address = testingUserEmail
   const { data, error } = await supabase.auth.signUp({
-    email: email,
+    email: email_address,
     password: 'password',
     options: {
       data: {
@@ -62,8 +70,8 @@ const createPrimaryTestUser = async () => {
       },
     },
   })
-  // console.log('data: ', data)
   profileId = data.user.id
+
 
   if (error) {
     logErrorAndExit('Users', error)
@@ -84,101 +92,54 @@ const createPrimaryTestUser = async () => {
   }
 }
 
-const seedProjects = async (numEntries, userId) => {
-  logStep('Seeding projects...')
-  const projects = []
+const seedEmails = async () => {
+  const emailsRecords = []
 
-  for (let i = 0; i < numEntries; i++) {
-    const name = faker.lorem.words(3)
-
-    projects.push({
-      name: name,
-      slug: name.toLocaleLowerCase().replace(/ /g, '-'),
-      description: faker.lorem.paragraphs(2),
-      status: faker.helpers.arrayElement(['in-progress', 'completed']),
-      collaborators: faker.helpers.arrayElements([userId]),
-    })
-  }
-
-  const { data, error } = await supabase.from('projects').insert(projects).select('id')
-
-  if (error) return logErrorAndExit('Projects', error)
-
-  logStep('Projects seeded successfully.')
-
-  return data
-}
-
-const seedTasks = async (numEntries, projectsIds, userId) => {
-  logStep('Seeding tasks...')
-  const tasks = []
-
-  for (let i = 0; i < numEntries; i++) {
-    tasks.push({
-      name: faker.lorem.words(3),
-      status: faker.helpers.arrayElement(['in-progress', 'completed']),
-      description: faker.lorem.paragraph(),
-      due_date: faker.date.future(),
-      profile_id: userId,
-      project_id: faker.helpers.arrayElement(projectsIds),
-      collaborators: faker.helpers.arrayElements([userId]),
-    })
-  }
-
-  const { data, error } = await supabase.from('tasks').insert(tasks).select('id')
-
-  if (error) return logErrorAndExit('Tasks', error)
-
-  logStep('Tasks seeded successfully.')
-
-  return data
-}
-
-const seedEmails = async (record) => {
-  const emails = record.emails_display.split(';')
-  emails.forEach((email) => {
+  for (let i = 0; i < emailAddresses.length; i++) {
+    // console.log(`EMAILADDRESS in seedEmails: ${emailAddresses[i]}`)
     emailsRecords.push({
-      report_id: record.id,
-      profile_id: record.profile_id,
-      email: email,
+      email_address: emailAddresses[i],
     })
-  })
+  }
+  // console.log(`emailsRecords: ${JSON.stringify(emailsRecords)}`)
+
+  const res = await supabase.from('emails').upsert(emailsRecords).select('id, email_address')
+  return res
 }
 
-const seedDepartments = async (record) => {
-  const departments = record.departments_display.split('%')
-  departments.forEach((department) => {
+const seedDepartments = async () => {
+  const departmentsRecords = []
+
+  for (let i = 0; i < departmentNames.length; i++) {
+    // console.log(`DEPARTMENT in seedDepartments: ${departments[i]}`)
     departmentsRecords.push({
-      report_id: record.id,
-      profile_id: record.profile_id,
-      name: department,
+      name: departmentNames[i],
     })
-  })
+  }
+  const res = await supabase.from('departments').upsert(departmentsRecords).select('id, name')
+  // console.log(`departmentsRecords: ${JSON.stringify(departmentsRecords)}`)
+  return res
 }
 
 const seedReports = async (numEntries) => {
+  // console.log(`numEntries: ${numEntries}`)
+  // console.log(`emails: ${JSON.stringify(emails)}`)
+  // console.log(`depts: ${JSON.stringify(depts)}`)
+
   const reports = []
 
   for (let i = 0; i < numEntries; i++) {
-    let departments = []
-    let emails = []
+    const depts_display = faker.helpers.arrayElements(departmentNames, { min: 2, max: 4 })
+    const email_display = faker.helpers.arrayElements(emailAddresses, { min: 1, max: 4 })
 
-    for (let i = 0; i < 60; i++) {
-      departments.push(faker.commerce.department() + '-' + faker.number.int({ min: 100, max: 999 }))
-      emails.push(faker.internet.email() + '-' + faker.number.int({ min: 100, max: 999 }))
-    }
-
-    const fDepts = faker.helpers.arrayElements(departments, { min: 2, max: 4 })
-    const fEmails = faker.helpers.arrayElements(emails, { min: 1, max: 6 })
-
-    let joinedDepartments = fDepts.join('%')
-    let joinedEmails = fEmails.join(';')
+    let joinedDepartments = depts_display.join('%')
+    let joinedEmails = email_display.join(';')
 
     reports.push({
       profile_id: profileId,
       departments_display: joinedDepartments,
       emails_display: joinedEmails,
-      subject: faker.lorem.words(4, { min: 1, max: 4 }).replaceAll(' ', '_'),
+      subject: joinedDepartments.replaceAll('%', '_'),
       rowsort: faker.helpers.arrayElement([0, 1]),
       cc_email: faker.internet.email(),
       columnsort: faker.helpers.arrayElement([0, 1]),
@@ -191,24 +152,18 @@ const seedReports = async (numEntries) => {
     })
   }
 
-  const records = await supabase.from('reports').insert(reports).select('*')
-
-  records.data.forEach(async (record) => {
-    await seedEmails(record)
-    await seedDepartments(record)
-  })
-
-  await supabase.from('emails').insert(emailsRecords)
-  await supabase.from('departments').insert(departmentsRecords)
+  console.log(`reports: ${JSON.stringify(reports[0])}`)
 
   console.log(
-    `Seeded ${numEntriesPerTable} records with ${emailsRecords.length} emails and ${departmentsRecords.length} departments`,
+    `Seeded ${numEntriesPerTable} records with ${emailAddresses.length} emails and ${departmentNames.length} departments`,
   )
 
-  return records.data
+  return await supabase.from('reports').insert(reports).select('id')
+
 }
 
-const seedDatabase = async (numEntriesPerTable) => {
+// const seedDatabase = async (numEntriesPerTable) => {
+  const seedDatabase = async (numEntriesPerTable) => {
   let userId
 
   const testUserId = await PrimaryTestUserExists()
@@ -219,38 +174,19 @@ const seedDatabase = async (numEntriesPerTable) => {
   } else {
     userId = testUserId
   }
+  console.log(`userId: ${userId}`)
 
-  const projectsIds = (await seedProjects(numEntriesPerTable, userId)).map((project) => project.id)
-  await seedTasks(numEntriesPerTable, projectsIds, userId)
+  const seededEmails = await seedEmails()
+  // console.log(`seededEmails: ${JSON.stringify(seededEmails.data)}`)
 
-  const reportsIds = (await seedReports(numEntriesPerTable, userId)).map((report) => report.id)
-  console.log(reportsIds)
+  const seededDepartments = await seedDepartments()
+  // console.log(`seededDepartments: ${JSON.stringify(seededDepartments.data)}`)
+
+  const seededReports = await seedReports(numEntriesPerTable)
+  console.log(`seededReports: ${JSON.stringify(seededReports.data)}`)
+
+
 }
-
-
-
-// seedDatabase(numEntriesPerTable)
-
-
-
-
-
-
-// const seedDatabase = async (numEntriesPerTable) => {
-//   let userId
-
-//   const testUserId = await PrimaryTestUserExists()
-
-//   if (!testUserId) {
-//     const primaryTestUserId = await createPrimaryTestUser()
-//     userId = primaryTestUserId
-//   } else {
-//     userId = testUserId
-//   }
-
-
-//   // console.log(reportsIds)
-// }
 
 
 await seedDatabase(numEntriesPerTable)

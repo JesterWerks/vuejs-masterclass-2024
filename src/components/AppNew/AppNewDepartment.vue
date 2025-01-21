@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import type { CreateNewDepartment } from '@/types/CreateNewForm'
-import { createNewDepartmentQuery, profilesQuery, reportsQuery } from '@/utils/supaQueries'
+import { createNewDepartmentQuery, profilesQuery, reportsWithDetailsQuery } from '@/utils/supaQueries'
 
 const sheetOpen = defineModel<boolean>()
 
 const getDepartmentsOptions = async () => {
-  const { data: allDepartments } = await reportsQuery
+  const { data: allDepartments } = await reportsWithDetailsQuery
 
   if (!allDepartments) return
 
@@ -36,12 +36,13 @@ const getOptions = async () => {
 
 getOptions()
 
-const { profile } = storeToRefs(useAuthStore())
+// const { profile } = storeToRefs(useAuthStore())
+const { reportsWithEmailsDepartments } = storeToRefs(useReportsStore())
 
 const createDepartment = async (formData: CreateNewDepartment) => {
   const department = {
     ...formData,
-    report_id: [profile.value!.id],
+    report_id: [reportsWithEmailsDepartments.value!.id],
   }
 
   const { error } = await createNewDepartmentQuery(department)

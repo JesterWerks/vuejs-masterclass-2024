@@ -13,11 +13,11 @@ export const columns: ColumnDef<EmailsWithReportsProfiles[0]>[] = [
     }
   },
   {
-    accessorKey: 'email',
+    accessorKey: 'email_address',
     header: () => h('div', { class: 'text-left hover:bg-muted' }, 'Email Address'),
     cell: ({ row }) => {
       const emailId: number = row.getValue('id')
-      const emailAddress: string = row.getValue('email')
+      const emailAddress: string = row.getValue('email_address')
       return h(RouterLink, { to: `/emails/${emailId}`, class: 'text-left font-small' }, emailAddress)
     }
   },
@@ -37,12 +37,5 @@ export const columns: ColumnDef<EmailsWithReportsProfiles[0]>[] = [
       return h('div', { class: 'text-left font-small' }, formatDate(emailDateEdited))
     }
   },
-  {
-    accessorKey: 'profile_id',
-    header: () => h('div', { class: 'text-left' }, 'Set Up By'),
-    cell: ({ row }) => {
-      const profileId: string = row.getValue('profile_id')
-      return h('div', { class: 'text-left font-small' }, profileId)
-    }
-  },
+
 ]

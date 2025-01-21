@@ -47,7 +47,7 @@ await getDepartment()
     <TableRow>
       <TableHead> Reports </TableHead>
       <TableCell v-if="department.reports">
-        <RouterLink v-for="report in department.reports" :key="report!" :to="`/reports/${report}`">{{ `${report}`
+        <RouterLink v-for="(report, index) in department.reports" :key="index" :to="`/reports/${report}`">{{ `${report}`
           }}
         </RouterLink>
       </TableCell>
@@ -65,8 +65,8 @@ await getDepartment()
       <TableCell>
         <div class="flex">
           <Avatar class="-mr-4 border border-primary hover:scale-110 transition-transform"
-            :class="department.profile_id ? 'cursor-pointer' : 'cursor-not-allowed'">
-            <RouterLink class="w-full h-full flex items-center justify-center" :to="`/users/${department.profile_id}`">
+            :class="department.id ? 'cursor-pointer' : 'cursor-not-allowed'">
+            <RouterLink class="w-full h-full flex items-center justify-center" :to="`/users/${department.id}`">
               <AvatarImage src="" alt="" />
               <AvatarFallback> </AvatarFallback>
             </RouterLink>

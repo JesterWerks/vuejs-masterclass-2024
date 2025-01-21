@@ -6,17 +6,18 @@ import { columns } from '@/utils/tableColumns/reportsColumns';
 
 usePageStore().pageData.title = 'Reports'
 const reportsLoader = useReportsStore()
-const { reportsWithEmailsDepartments } = storeToRefs(reportsLoader)
+const { reportsWithDetailsQuery } = storeToRefs(reportsLoader)
 const { getReports } = reportsLoader
 
 
 await getReports()
 
+console.log(`Reports: ${await getReports()}`)
 
 </script>
 
 <template>
-  <DataTable v-if="reportsWithEmailsDepartments" :columns="columns" :data="reportsWithEmailsDepartments" />
+  <DataTable v-if="reportsWithDetailsQuery" :columns="columns" :data="reportsWithDetailsQuery" />
 </template>
 
 <style scoped></style>
