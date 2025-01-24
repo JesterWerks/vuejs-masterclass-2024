@@ -2,16 +2,16 @@
 <script setup lang='ts'>
 import { ref } from 'vue'
 import { usePageStore } from '@/stores/page';
-import { emailsWithReportsProfilesQuery } from '@/utils/supaQueries';
-import type { EmailsWithReportsProfiles } from '@/utils/supaQueries';
+import { emailsQuery } from '@/utils/supaQueries';
+import type { Emails } from '@/utils/supaQueries';
 import { columns } from '@/utils/tableColumns/emailColumns';
 
 usePageStore().pageData.title = 'Emails'
 
-const emails = ref<EmailsWithReportsProfiles | null>(null)
+const emails = ref<Emails | null>(null)
 
 const getEmails = async () => {
-  const { data, error } = await emailsWithReportsProfilesQuery
+  const { data, error } = await emailsQuery
 
   if (error) console.log('error', error)
 

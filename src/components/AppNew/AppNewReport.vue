@@ -1,6 +1,11 @@
-<script setup lang="ts">
-import type { CreateNewReport } from '@/types/CreateNewForm'
-import { createNewReportQuery, profilesQuery, reportsWithDetailsQuery } from '@/utils/supaQueries'
+<script setup lang="ts"></script>
+
+<template>
+  <div></div>
+</template>
+
+<!-- import type { CreateNewReport } from '@/types/CreateNewForm'
+import { createNewReportQuery, reportsWithDetailsQuery } from '@/utils/supaQueries'
 
 const sheetOpen = defineModel<boolean>()
 
@@ -17,21 +22,23 @@ const getReportsOptions = async () => {
   })
 }
 
-const getProfilesOptions = async () => {
-  const { data: allProfiles } = await profilesQuery
+// const getProfilesOptions = async () => {
+//   const { data: allProfiles } = await profilesQuery
 
-  if (!allProfiles) return
+//   if (!allProfiles) return
 
-  allProfiles.forEach((profile) => {
-    selectOptions.value.profiles.push({
-      label: profile.full_name,
-      value: profile.id,
-    })
-  })
-}
+//   allProfiles.forEach((profile) => {
+//     selectOptions.value.profiles.push({
+//       label: profile.full_name,
+//       value: profile.id,
+//     })
+//   })
+// }
 
 const getOptions = async () => {
-  await Promise.all([getReportsOptions(), getProfilesOptions()])
+  await Promise.all([getReportsOptions()
+  // ,getProfilesOptions()
+  ])
 }
 
 getOptions()
@@ -111,4 +118,4 @@ const selectOptions = ref({
       </FormKit>
     </SheetContent>
   </Sheet>
-</template>
+</template> -->

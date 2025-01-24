@@ -20,7 +20,7 @@ const getEmail = async () => {
   const { data, error } = await emailQuery(parseInt(id))
   if (error) console.log('error', error)
 
-  console.log('email_address data', data)
+  // console.log('email_address data', data)
   email_address.value = data
 }
 

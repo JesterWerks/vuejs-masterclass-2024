@@ -2,21 +2,20 @@
 <script setup lang='ts'>
 import { ref } from 'vue'
 import { usePageStore } from '@/stores/page';
-import { departmentsWithReportsProfilesQuery } from '@/utils/supaQueries';
-import type { DepartmentsWithReportsProfiles } from '@/utils/supaQueries';
+import { departmentsQuery } from '@/utils/supaQueries';
+import type { Departments } from '@/utils/supaQueries';
 import { columns } from '@/utils/tableColumns/departmentColumns';
 
 usePageStore().pageData.title = 'Departments'
 
-const departments = ref<DepartmentsWithReportsProfiles | null>(null)
+const departments = ref<Departments | null>(null)
 
 const getDepartments = async () => {
-  const { data, error } = await departmentsWithReportsProfilesQuery
+  const { data, error } = await departmentsQuery
 
   if (error) console.log('error', error)
 
   departments.value = data
-  console.log('departments', departments.value)
 }
 
 await getDepartments()

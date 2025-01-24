@@ -31,6 +31,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "iconify-icon": "^2.1.0",
+    "lodash": "^4.17.21",
     "lucide-vue-next": "^0.456.0",
     "pinia": "^2.2.6",
     "punycode": "^2.3.1",
@@ -43,6 +44,7 @@
   "devDependencies": {
     "@faker-js/faker": "^9.2.0",
     "@tsconfig/node22": "^22.0.0",
+    "@types/lodash": "^4.17.14",
     "@types/node": "^22.9.0",
     "@vitejs/plugin-vue": "^5.2.0",
     "@vue/eslint-config-prettier": "^10.1.0",

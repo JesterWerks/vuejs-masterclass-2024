@@ -1,5 +1,5 @@
 import { supabase } from '@/lib/supabaseClient'
-import { profileQuery } from '@/utils/supaQueries'
+import { profileForAuthQuery } from '@/utils/supaQueries'
 import type { Session, User } from '@supabase/supabase-js'
 import type { Tables } from 'database/types'
 
@@ -14,9 +14,9 @@ export const useAuthStore = defineStore('auth-store', () => {
       return
     }
     if (!profile.value || profile.value.id !== user.value.id) {
-      const { data } = await profileQuery({ column: 'id', value: user.value.id })
+      profile.value = await profileForAuthQuery({ column: 'id', value: user.value.id }) || null
 
-      profile.value = data || null
+      // profile.value = data || null
     }
   }
 

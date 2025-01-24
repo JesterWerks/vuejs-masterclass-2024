@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang='ts'>
-import { reportWithDetailsQuery } from '@/utils/supaQueries';
-import type { ReportWithDetails } from '@/utils/supaQueries'
+import { reportQuery } from '@/utils/supaQueries';
+import type { Report } from '@/utils/supaQueries'
 import { ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { usePageStore } from '@/stores/page';
@@ -22,7 +22,7 @@ const fields: string[] = [
 
 const { subject } = useRoute('/reports/[subject]').params;
 
-const report = ref<ReportWithDetails | null>(null)
+const report = ref<Report | null>(null)
 
 watch(
   () => report.value?.subject,
@@ -32,7 +32,7 @@ watch(
 )
 
 const getReport = async () => {
-  const { data, error } = await reportWithDetailsQuery(subject)
+  const { data, error } = await reportQuery(subject)
   if (error) console.log('error', error)
 
   report.value = data
@@ -42,10 +42,10 @@ await getReport()
 // const departments: (string[] | null) = report.value?.departments ? report.value.departments : null
 // const emails: (string[] | null) = report.value?.emails_display ? report.value.emails_display.split(';') : null
 
-const departments: (ReportWithDetails['departments'] | null) = report.value?.departments ? report.value.departments : null
-console.log(`departments: ${departments}`)
-const emails: (ReportWithDetails['emails'] | null) = report.value?.emails ? report.value.emails : null
-console.log(`emails: ${emails}`)
+// const departments: (reportQuery['departments'] | null) = report.value?.departments ? report.value.departments : null
+// console.log(`departments: ${departments}`)
+// const emails: (reportQuery['emails'] | null) = report.value?.emails ? report.value.emails : null
+// console.log(`emails: ${emails}`)
 
 
 const newDateEdited = report.value?.date_edited ? new Date(report.value.date_edited).toLocaleString() : null
@@ -59,13 +59,13 @@ const newDateEdited = report.value?.date_edited ? new Date(report.value.date_edi
     </TableRow>
     <TableRow>
       <TableHead> Departments </TableHead>
-      <TableCell v-if="departments">
+      <TableCell v-if="report.departments">
         <RouterLink v-for="(dept, index) in report.departments" :key="index" :to="`/departments/${dept}`">{{ `${dept}, ` }}</RouterLink>
       </TableCell>
     </TableRow>
     <TableRow>
       <TableHead> Recipients </TableHead>
-      <TableCell v-if="emails">
+      <TableCell v-if="report.emails">
         <RouterLink v-for="(email, index) in report.emails" :key="index" :to="`/departments/${email}`">{{ `${email}, ` }}</RouterLink>
       </TableCell>
     </TableRow>

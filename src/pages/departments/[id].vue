@@ -21,7 +21,7 @@ watch(
 )
 
 const getDepartment = async () => {
-  const { data, error } = await departmentQuery(parseInt(id))
+  const { data, error } = await departmentQuery(id)
   console.log('dept data', data)
 
   if (error) console.log('error', error)

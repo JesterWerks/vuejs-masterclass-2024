@@ -1,6 +1,10 @@
-<script setup lang="ts">
-import type { CreateNewDepartment } from '@/types/CreateNewForm'
-import { createNewDepartmentQuery, profilesQuery, reportsWithDetailsQuery } from '@/utils/supaQueries'
+<script setup lang="ts"></script>
+
+<template>
+  <div></div>
+</template>
+<!-- import type { CreateNewDepartment } from '@/types/CreateNewForm'
+import { createNewDepartmentQuery, reportsWithDetailsQuery } from '@/utils/supaQueries'
 
 const sheetOpen = defineModel<boolean>()
 
@@ -17,21 +21,24 @@ const getDepartmentsOptions = async () => {
   })
 }
 
-const getProfilesOptions = async () => {
-  const { data: allProfiles } = await profilesQuery
+// const getProfilesOptions = async () => {
+//   const { data: allProfiles } = await fetchReportsWithDetails
 
-  if (!allProfiles) return
+//   if (!allProfiles) return
 
-  allProfiles.forEach((profile) => {
-    selectOptions.value.profiles.push({
-      label: profile.full_name,
-      value: profile.id,
-    })
-  })
-}
+//   allProfiles.forEach((profile) => {
+//     selectOptions.value.profiles.push({
+//       label: profile.full_name,
+//       value: profile.id,
+//     })
+//   })
+// }
 
 const getOptions = async () => {
-  await Promise.all([getDepartmentsOptions(), getProfilesOptions()])
+  await Promise.all([
+    getDepartmentsOptions()
+    // ,getProfilesOptions()
+  ])
 }
 
 getOptions()
@@ -60,8 +67,8 @@ const selectOptions = ref({
   reports: [] as SelectOption[],
   profiles: [] as SelectOption[],
 })
-</script>
-<template>
+</script> -->
+<!-- <template>
   <Sheet v-model:open="sheetOpen">
     <SheetContent>
       <SheetHeader>
@@ -103,15 +110,15 @@ const selectOptions = ref({
           :options="selectOptions.reports"
           validation="required"
         />
-        <!-- <FormKit
+        <FormKit
           type="textarea"
           name="description"
           id="description"
           label="Description"
           placeholder="Department description"
           validation="length:0,500"
-        /> -->
+        />
       </FormKit>
     </SheetContent>
   </Sheet>
-</template>
+</template> -->
